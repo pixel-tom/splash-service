@@ -1,8 +1,12 @@
-const withTM = require('next-transpile-modules')(['rc-util']); // Add rc-util to be transpiled
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+import withTM from 'next-transpile-modules';
 
-/** @type {import('next').NextConfig} */
+const withTranspileModules = withTM(['rc-util']);
+
 const nextConfig = {
   reactStrictMode: true,
+  // Your other configurations
 };
 
-module.exports = withTM(nextConfig);
+export default withTranspileModules(nextConfig);
