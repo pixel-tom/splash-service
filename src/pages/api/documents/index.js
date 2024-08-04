@@ -1,37 +1,21 @@
-import aws from 'aws-sdk';
+// src/pages/api/documents/index.js
+import { google } from 'googleapis';
 
-// Initialize S3 client
-const s3 = new aws.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION,
+const drive = google.drive({
+  version: 'v3',
+  auth: config.process.env.GOOGLE_API_KEY,
 });
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
     try {
-      const params = {
-        Bucket: process.env.AWS_S3_BUCKET_NAME,
-      };
-      const data = await s3.listObjectsV2(params).promise();
-
-      const documents = await Promise.all(data.Contents.map(async (item) => {
-        const url = await s3.getSignedUrlPromise('getObject', {
-          Bucket: process.env.AWS_S3_BUCKET_NAME,
-          Key: item.Key,
-          Expires: 60 * 60, // 1 hour
-        });
-        return {
-          key: item.Key,
-          lastModified: item.LastModified,
-          size: item.Size,
-          url,
-        };
-      }));
-
-      res.status(200).json(documents);
+      const response = await drive.files.list({
+        pageSize: 10,
+        fields: 'nextPageToken, files(id, name, mimeType, size, createdTime)',
+      });
+      res.status(200).json(response.data.files);
     } catch (error) {
-      console.error('Error fetching documents from S3:', error);
+      console.error('Error fetching documents:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   } else {

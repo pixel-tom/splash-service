@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { Collapse, Table, Button, Tag, Modal, Typography } from 'antd';
-import { FileOutlined, EyeOutlined, DownloadOutlined } from '@ant-design/icons';
+import React, { useState, useEffect } from 'react';
+import { Collapse, Table, Button, Tag, Modal, Typography, Popover } from 'antd';
+import { FileOutlined, EyeOutlined, DownloadOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { formatFileSize } from '../utils/formatFileSize'; // Adjust the path as needed
+import { useMediaQuery } from 'react-responsive';
 
 const { Panel } = Collapse;
 const { Text } = Typography;
@@ -9,19 +10,24 @@ const { Text } = Typography;
 const DocumentList = ({ documents = [] }) => {
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewUrl, setPreviewUrl] = useState('');
+  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
-  // Group documents by main category and subcategory
+  useEffect(() => {
+    console.log('Documents prop received:', documents); // Debugging log
+  }, [documents]);
+
+  // Filter out .DS_Store files and group documents by subfolder
   const groupedDocuments = documents.reduce((acc, doc) => {
-    const pathParts = doc.key.split('/');
-    const mainCategory = pathParts.length > 1 ? pathParts[1] : 'Uncategorized';
-    const subcategory = pathParts.length > 2 ? pathParts[2] : 'Uncategorized';
-    const subKey = `${mainCategory}/${subcategory}`;
+    if (doc.name === '.DS_Store') return acc; // Filter out .DS_Store files
 
-    if (!acc[subKey]) {
-      acc[subKey] = [];
+    const pathParts = doc.key.split('/');
+    const mainCategory = pathParts[2] || 'Uncategorized'; // Manuals/MCWW/Conveyor/ => Conveyor
+
+    if (!acc[mainCategory]) {
+      acc[mainCategory] = [];
     }
-    if (doc.key && doc.size && subcategory) { // Ensure the document is valid
-      acc[subKey].push(doc);
+    if (doc.key && doc.size && mainCategory && doc.size > 0) { // Ensure the document is valid and not a folder
+      acc[mainCategory].push(doc);
     }
     return acc;
   }, {});
@@ -33,7 +39,7 @@ const DocumentList = ({ documents = [] }) => {
 
   const columns = [
     {
-      title: <p className='text-xs'>File Name</p>,
+      title: <p className='text-[10px]'>File Name</p>,
       dataIndex: 'key',
       key: 'key',
       render: (text) => (
@@ -44,59 +50,56 @@ const DocumentList = ({ documents = [] }) => {
       ),
     },
     {
-      title: <p className='text-xs'>Size</p>,
-      dataIndex: 'size',
-      key: 'size',
-      render: (text) => <div className='text-xs text-[#666]'>{formatFileSize(text)}</div>,
-    },
-    {
-      title: <p className='text-xs'>Tags</p>,
-      key: 'tags',
-      render: (_, record) => {
-        const pathParts = record.key.split('/');
-        const mainCategory = pathParts.length > 1 ? pathParts[1] : 'Uncategorized';
-        const subcategory = pathParts.length > 2 ? pathParts[2] : 'Uncategorized';
-        return (
-          <>
-            <Tag color="blue" className='text-xs'>{mainCategory}</Tag>
-            <Tag color="green" className='text-xs'>{subcategory}</Tag>
-          </>
-        );
-      },
-    },
-    {
-      title: <p className='text-xs'>Actions</p>,
+      title: <p className='text-[10px]'>Actions</p>,
       dataIndex: 'url',
       key: 'url',
-      render: (text) => (
+      render: (text, record) => (
         <div>
           <Button type="link" onClick={() => handlePreview(text)} icon={<EyeOutlined />} />
           <Button type="link" href={text} download icon={<DownloadOutlined />} />
+          {isMobile && (
+            <Popover
+              content={
+                <div>
+                  <p><strong>Size:</strong> {formatFileSize(record.size)}</p>
+                  <p><strong>Tags:</strong></p>
+                  <div>
+                    {record.key.split('/').slice(1, -1).map((tag, index) => (
+                      <Tag color={index % 2 === 0 ? "blue" : "green"} key={index}>{tag}</Tag>
+                    ))}
+                  </div>
+                </div>
+              }
+              title="File Info"
+              trigger="click"
+            >
+              <Button type="link" icon={<InfoCircleOutlined />} />
+            </Popover>
+          )}
         </div>
       ),
     },
   ];
 
   return (
-    <div className="px-2">
+    <div className="">
       <Collapse accordion>
-        {Object.keys(groupedDocuments).map((subKey) => {
-          const [mainCategory, subcategory] = subKey.split('/');
-          const fileCount = groupedDocuments[subKey].length;
-          if (fileCount === 0) return null; // Skip empty categories
+        {Object.keys(groupedDocuments).map((mainCategory) => {
+          const fileCount = groupedDocuments[mainCategory].length;
+          if (fileCount === 0) return null; // Skip empty subcategories
           return (
             <Panel
               header={
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontWeight: '500' }}>{subcategory}</span>
+                  <span style={{ fontWeight: '500' }}>{mainCategory}</span>
                   <span style={{ fontSize: '12px', color: '#ff7f02' }}>{fileCount} files</span>
                 </div>
               }
-              key={subKey}
+              key={mainCategory}
             >
               <Table
-                columns={columns}
-                dataSource={groupedDocuments[subKey].map((doc) => ({
+                columns={isMobile ? columns.slice(0, 2) : columns}
+                dataSource={groupedDocuments[mainCategory].map((doc) => ({
                   key: doc.key,
                   size: doc.size,
                   url: doc.url,
@@ -114,13 +117,13 @@ const DocumentList = ({ documents = [] }) => {
         footer={null}
         onCancel={() => setPreviewVisible(false)}
         width="90%"
-        style={{ top: '5%', margin: '0 auto' }}
-        bodyStyle={{ height: '90vh', padding: 0 }}
+        height="90%"
+        style={{ top: 50 }}
       >
         <iframe
           src={previewUrl}
           width="100%"
-          height="100%"
+          height="650px"
           style={{ border: 'none' }}
           title="Document Preview"
         />

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { Menu, Layout } from 'antd';
 import {
@@ -6,6 +6,8 @@ import {
   VideoCameraOutlined,
   BookOutlined,
   EllipsisOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
 } from '@ant-design/icons';
 import Image from 'next/image';
 
@@ -95,20 +97,16 @@ const Sidebar = ({ collapsedWidth = 100 }) => {
 
   const onOpenChange = (openKeys) => {
     const currentOpenKey = openKeys.find((key) => stateOpenKeys.indexOf(key) === -1);
-    // open
     if (currentOpenKey !== undefined) {
       const repeatIndex = openKeys
         .filter((key) => key !== currentOpenKey)
         .findIndex((key) => levelKeys[key] === levelKeys[currentOpenKey]);
       setStateOpenKeys(
         openKeys
-          // remove repeat key
           .filter((_, index) => index !== repeatIndex)
-          // remove current level all child
           .filter((key) => levelKeys[key] <= levelKeys[currentOpenKey]),
       );
     } else {
-      // close
       setStateOpenKeys(openKeys);
     }
   };
@@ -118,20 +116,30 @@ const Sidebar = ({ collapsedWidth = 100 }) => {
       collapsible
       collapsed={collapsed}
       onCollapse={toggleCollapsed}
-      width={280}  // Increased width
-      collapsedWidth={collapsedWidth}  // Collapsed width
+      width={280}
+      collapsedWidth={collapsedWidth}
       style={{ 
         height: '100vh', 
-        backgroundColor: '#f6f5f2',  // Light background
-        color: '#333333',  // Dark text
-        paddingLeft: '10px',  // Extra padding
-        paddingRight: '10px'  // Extra padding
+        backgroundColor: '#f6f5f2',
+        color: '#333333',
+        paddingLeft: '10px',
+        paddingRight: '10px',
       }}
+      trigger={null}
     >
-      <div className="logo" style={{ textAlign: 'center', margin: '16px 0' }}>
+      <div className="logo" style={{ textAlign: 'center', margin: '16px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingRight: '10px' }}>
         <Link href="/" className='flex items-center'>
           <Image src={"/splash-logo.png"} alt="splash" height={70} width={70} className='ml-2 mt-[-8px]' />
         </Link>
+        <div
+          style={{
+            cursor: 'pointer',
+            color: '#555'
+          }}
+          onClick={toggleCollapsed}
+        >
+          
+        </div>
       </div>
       <Menu
         mode="inline"
@@ -139,8 +147,8 @@ const Sidebar = ({ collapsedWidth = 100 }) => {
         openKeys={stateOpenKeys}
         onOpenChange={onOpenChange}
         style={{ 
-          backgroundColor: '#f6f5f2', 
-          color: '#333333'  // Dark text
+          backgroundColor: '#f6f5f2',
+          color: '#333333',
         }}
         items={items}
         theme="light"

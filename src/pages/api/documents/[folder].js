@@ -1,10 +1,7 @@
-import aws from 'aws-sdk';
+import { Storage } from '@google-cloud/storage';
 
-// Initialize S3 client
-const s3 = new aws.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION,
+const storage = new Storage({
+  keyFilename: 'splash-service-manual-hub-ab13067ae192.json', // Replace with the path to your service account key
 });
 
 export default async function handler(req, res) {
@@ -12,30 +9,30 @@ export default async function handler(req, res) {
 
   if (req.method === 'GET') {
     try {
-      const params = {
-        Bucket: process.env.AWS_S3_BUCKET_NAME,
-        Prefix: `Manuals/${folder}/`,
-      };
-      const data = await s3.listObjectsV2(params).promise();
+      const bucketName = 'splash-service'; // Replace with your bucket name
+      const folderPath = `Manuals/${folder}/`; // Ensure the folder path includes "Manuals" and ends with a slash
 
-      const documents = await Promise.all(data.Contents.map(async (item) => {
-        const url = await s3.getSignedUrlPromise('getObject', {
-          Bucket: process.env.AWS_S3_BUCKET_NAME,
-          Key: item.Key,
-          Expires: 60 * 60, // 1 hour
-        });
-        return {
-          key: item.Key,
-          lastModified: item.LastModified,
-          size: item.Size,
-          url,
-        };
+      console.log(`Fetching files from: ${bucketName}/${folderPath}`); // Debugging log
+
+      const [files] = await storage.bucket(bucketName).getFiles({
+        prefix: folderPath,
+      });
+
+      console.log(`Files fetched: ${files.length}`); // Log the number of files fetched
+
+      const documents = files.map(file => ({
+        key: file.name,
+        name: file.name.split('/').pop(), // Extracting the file name
+        mimeType: file.metadata.contentType,
+        size: file.metadata.size,
+        modifiedTime: file.metadata.updated,
+        url: `https://storage.googleapis.com/${bucketName}/${file.name}`,
       }));
-
+      
       res.status(200).json(documents);
     } catch (error) {
-      console.error('Error fetching documents from S3:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error('Error fetching documents from Google Cloud Storage:', error);
+      res.status(500).json({ error: 'Internal Server Error', details: error.message });
     }
   } else {
     res.setHeader('Allow', ['GET']);
