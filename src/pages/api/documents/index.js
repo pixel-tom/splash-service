@@ -1,25 +1,37 @@
-// src/pages/api/documents/index.js
-import { google } from 'googleapis';
+import { Storage } from "@google-cloud/storage";
 
-const drive = google.drive({
-  version: 'v3',
-  auth: config.process.env.GOOGLE_API_KEY,
+const storage = new Storage({
+  projectId: process.env.GOOGLE_PROJECT_ID,
+  credentials: {
+    client_email: process.env.GOOGLE_CLIENT_EMAIL,
+    private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+  },
 });
 
 export default async function handler(req, res) {
-  if (req.method === 'GET') {
+  if (req.method === "GET") {
     try {
-      const response = await drive.files.list({
-        pageSize: 10,
-        fields: 'nextPageToken, files(id, name, mimeType, size, createdTime)',
+      const bucketName = "splash-service"; // Replace with your bucket name
+      const [files] = await storage.bucket(bucketName).getFiles({
+        maxResults: 10,
       });
-      res.status(200).json(response.data.files);
+
+      const documents = files.map((file) => ({
+        key: file.name,
+        name: file.name.split("/").pop(),
+        mimeType: file.metadata.contentType,
+        size: file.metadata.size,
+        createdTime: file.metadata.timeCreated,
+        url: `https://storage.googleapis.com/${bucketName}/${file.name}`,
+      }));
+
+      res.status(200).json(documents);
     } catch (error) {
-      console.error('Error fetching documents:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error("Error fetching documents:", error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
   } else {
-    res.setHeader('Allow', ['GET']);
+    res.setHeader("Allow", ["GET"]);
     res.status(405).json({ error: `Method '${req.method}' Not Allowed` });
   }
 }

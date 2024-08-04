@@ -103,14 +103,16 @@ const CustomHeader = () => {
               borderColor: "#0fa7de",
               borderRadius: "50px",
               paddingLeft: "40px",
-              
             }}
-            className="py-2 ml-10 max-w-64 md:ml-0"
+            className="py-2 ml-10 w-64 lg:w-[400px] md:ml-0"
           />
         </div>
         {user ? (
-          <div className="flex items-center gap-2">
-            <Text className="invisible md:visible" style={{ color: "#084b73", marginRight: 8 }}>
+          <div className="flex items-center gap-1">
+            <Text
+              className="invisible md:visible"
+              style={{ color: "#084b73", marginRight: 8 }}
+            >
               {user.displayName}
             </Text>
             <Popover

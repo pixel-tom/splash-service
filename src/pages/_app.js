@@ -4,12 +4,13 @@ import Head from "next/head";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import theme from "../theme";
-import { NotificationProvider } from '@/context/NotificationProvider'; // Adjust the path as needed
+import { NotificationProvider } from "@/context/NotificationProvider"; // Adjust the path as needed
 
 export default function App({ Component, pageProps }) {
   return (
     <>
       <Head>
+      <title>Splash Service Hub</title>
         <link
           rel="preload"
           href="/fonts/Gotham-Bold.otf"

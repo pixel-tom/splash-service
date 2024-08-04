@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { Layout, Drawer, Button } from 'antd';
-import Sidebar from './Sidebar';
-import Header from './Header';
-import { MenuOutlined } from '@ant-design/icons';
-import { useMediaQuery } from 'react-responsive';
+import React, { useState } from "react";
+import { Layout, Drawer, Button } from "antd";
+import Sidebar from "./Sidebar";
+import Header from "./Header";
+import { MenuOutlined } from "@ant-design/icons";
+import { useMediaQuery } from "react-responsive";
 
 const Dashboard = ({ children }) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
+  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
 
   const toggleDrawer = () => {
     setDrawerVisible(!drawerVisible);
@@ -18,18 +18,18 @@ const Dashboard = ({ children }) => {
       {isMobile ? (
         <>
           <Button
-            type='default'
+            type="default"
             icon={<MenuOutlined />}
             onClick={toggleDrawer}
-            style={{ position: 'fixed', top: 29, left: 16, zIndex: 1000 }}
+            style={{ position: "fixed", top: 29, left: 16, zIndex: 1000 }}
           />
           <Drawer
             placement="left"
-            style={{ backgroundColor: '#f6f5f2'}}
+            style={{ backgroundColor: "#f6f5f2" }}
             onClose={toggleDrawer}
             visible={drawerVisible}
             bodyStyle={{ padding: 0 }}
-            className='pt-[20px]'
+            className="pt-[20px]"
           >
             <Sidebar />
           </Drawer>

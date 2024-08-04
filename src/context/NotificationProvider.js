@@ -1,5 +1,5 @@
-import React, { createContext, useContext } from 'react';
-import { notification } from 'antd';
+import React, { createContext, useContext } from "react";
+import { notification } from "antd";
 
 const NotificationContext = createContext();
 
@@ -8,7 +8,7 @@ export const NotificationProvider = ({ children }) => {
     notification[type]({
       message,
       description,
-      placement: 'bottomRight',
+      placement: "bottomRight",
     });
   };
 

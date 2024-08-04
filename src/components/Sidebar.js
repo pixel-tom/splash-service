@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, Layout } from 'antd';
 import {
@@ -10,6 +10,7 @@ import {
   MenuFoldOutlined,
 } from '@ant-design/icons';
 import Image from 'next/image';
+import { useMediaQuery } from 'react-responsive';
 
 const { Sider } = Layout;
 
@@ -90,6 +91,12 @@ const levelKeys = getLevelKeys(items);
 const Sidebar = ({ collapsedWidth = 100 }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [stateOpenKeys, setStateOpenKeys] = useState(['sub1', '2']);
+  const isMdOrLarger = useMediaQuery({ query: '(min-width: 768px)' });
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
@@ -129,7 +136,9 @@ const Sidebar = ({ collapsedWidth = 100 }) => {
     >
       <div className="logo" style={{ textAlign: 'center', margin: '16px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingRight: '10px' }}>
         <Link href="/" className='flex items-center'>
-          <Image src={"/splash-logo.png"} alt="splash" height={70} width={70} className='ml-2 mt-[-8px]' />
+          {isMounted && isMdOrLarger && (
+            <Image src={"/splash-logo.png"} alt="splash" height={70} width={70} className='ml-2 mt-[-8px]' />
+          )}
         </Link>
         <div
           style={{
