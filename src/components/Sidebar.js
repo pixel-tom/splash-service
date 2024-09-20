@@ -6,96 +6,36 @@ import {
   VideoCameraOutlined,
   BookOutlined,
   EllipsisOutlined,
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
 } from '@ant-design/icons';
 import Image from 'next/image';
 import { useMediaQuery } from 'react-responsive';
 
 const { Sider } = Layout;
 
-const items = [
-  {
-    key: 'sub1',
-    icon: <FileOutlined style={{ color: '#084b73' }} />,
-    label: <span style={{ color: '#084b73', fontWeight: '600' }}>Equipment Manuals</span>,
-    children: [
-      {
-        key: '2',
-        label: <Link href="/manuals/AVW"><span style={{ color: '#084b73', fontWeight: '600' }}>AVW</span></Link>,
-      },
-      {
-        key: '3',
-        label: <Link href="/manuals/Laguna"><span style={{ color: '#084b73', fontWeight: '600' }}>Laguna</span></Link>,
-      },
-      {
-        key: '4',
-        label: <Link href="/manuals/MCWW"><span style={{ color: '#084b73', fontWeight: '600' }}>MCWW</span></Link>,
-      },
-      {
-        key: '5',
-        label: <Link href="/manuals/Hydraflex"><span style={{ color: '#084b73', fontWeight: '600' }}>Hydraflex</span></Link>,
-      },
-    ],
-  },
-  {
-    key: 'sub2',
-    icon: <VideoCameraOutlined style={{ color: '#0fa7de' }} />,
-    label: <span style={{ color: '#0fa7de', fontWeight: '600' }}>Instructional Videos</span>,
-    children: [
-      {
-        key: '6',
-        label: <Link href="/instructional-videos/setup"><span style={{ color: '#0fa7de', fontWeight: '600' }}>Setup</span></Link>,
-      },
-      {
-        key: '7',
-        label: <Link href="/instructional-videos/troubleshooting"><span style={{ color: '#0fa7de', fontWeight: '600' }}>Troubleshooting</span></Link>,
-      },
-    ],
-  },
-  {
-    key: '8',
-    icon: <BookOutlined style={{ color: '#c3d700' }} />,
-    label: <Link href="/training-videos"><span style={{ color: '#c3d700', fontWeight: '600' }}>Training Videos</span></Link>,
-  },
-  {
-    key: '9',
-    icon: <BookOutlined style={{ color: '#ff7f02' }} />,
-    label: <Link href="/guides"><span style={{ color: '#ff7f02', fontWeight: '600' }}>Guides</span></Link>,
-  },
-  {
-    key: '10',
-    icon: <EllipsisOutlined style={{ color: '#333333' }} />,
-    label: <Link href="/other-items"><span style={{ color: '#333333', fontWeight: '600' }}>Resources</span></Link>,
-  },
-];
-
-const getLevelKeys = (items1) => {
-  const key = {};
-  const func = (items2, level = 1) => {
-    items2.forEach((item) => {
-      if (item.key) {
-        key[item.key] = level;
-      }
-      if (item.children) {
-        func(item.children, level + 1);
-      }
-    });
-  };
-  func(items1);
-  return key;
-};
-
-const levelKeys = getLevelKeys(items);
-
 const Sidebar = ({ collapsedWidth = 100 }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const [stateOpenKeys, setStateOpenKeys] = useState(['sub1', '2']);
+  const [stateOpenKeys, setStateOpenKeys] = useState(['sub1']);
+  const [manualFolders, setManualFolders] = useState([]);
   const isMdOrLarger = useMediaQuery({ query: '(min-width: 768px)' });
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const fetchFolders = async () => {
+      try {
+        const response = await fetch('/api/folders');
+        const data = await response.json();
+        console.log('Fetched folders:', data); // Log fetched data
+        setManualFolders(data);
+      } catch (error) {
+        console.error('Error fetching folders:', error);
+      }
+    };
+
+    fetchFolders();
   }, []);
 
   const toggleCollapsed = () => {
@@ -117,6 +57,68 @@ const Sidebar = ({ collapsedWidth = 100 }) => {
       setStateOpenKeys(openKeys);
     }
   };
+
+  const manualItems = manualFolders.map((folder, index) => ({
+    key: `folder-${index}`,
+    label: <Link href={`/manuals/${folder.name}`}><span style={{ color: '#084b73', fontWeight: '600' }}>{folder.name}</span></Link>,
+  }));
+
+  const items = [
+    {
+      key: 'sub1',
+      icon: <FileOutlined style={{ color: '#084b73' }} />,
+      label: <span style={{ color: '#084b73', fontWeight: '600' }}>Equipment Manuals</span>,
+      children: manualItems,
+    },
+    {
+      key: 'sub2',
+      icon: <VideoCameraOutlined style={{ color: '#0fa7de' }} />,
+      label: <span style={{ color: '#0fa7de', fontWeight: '600' }}>Instructional Videos</span>,
+      children: [
+        {
+          key: '6',
+          label: <Link href="/instructional-videos/setup"><span style={{ color: '#0fa7de', fontWeight: '600' }}>Setup</span></Link>,
+        },
+        {
+          key: '7',
+          label: <Link href="/instructional-videos/troubleshooting"><span style={{ color: '#0fa7de', fontWeight: '600' }}>Troubleshooting</span></Link>,
+        },
+      ],
+    },
+    {
+      key: '8',
+      icon: <BookOutlined style={{ color: '#c3d700' }} />,
+      label: <Link href="/training-videos"><span style={{ color: '#c3d700', fontWeight: '600' }}>Training Videos</span></Link>,
+    },
+    {
+      key: '9',
+      icon: <BookOutlined style={{ color: '#ff7f02' }} />,
+      label: <Link href="/guides"><span style={{ color: '#ff7f02', fontWeight: '600' }}>Guides</span></Link>,
+    },
+    {
+      key: '10',
+      icon: <EllipsisOutlined style={{ color: '#333333' }} />,
+      label: <Link href="/other-items"><span style={{ color: '#333333', fontWeight: '600' }}>Resources</span></Link>,
+    },
+  ];
+
+  const getLevelKeys = (items1) => {
+    const key = {};
+    const func = (items2, level = 1) => {
+      items2.forEach((item) => {
+        if (item.key) {
+          key[item.key] = level;
+        }
+        if (item.children) {
+          func(item.children, level + 1);
+        }
+      });
+    };
+    func(items1);
+    return key;
+  };
+
+  const levelKeys = getLevelKeys(items);
 
   return (
     <Sider

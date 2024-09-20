@@ -10,7 +10,6 @@ import { formatFileSize } from "../utils/formatFileSize"; // Adjust the path as 
 import { useMediaQuery } from "react-responsive";
 
 const { Panel } = Collapse;
-const { Text } = Typography;
 
 const DocumentList = ({ documents = [] }) => {
   const [previewVisible, setPreviewVisible] = useState(false);
@@ -45,22 +44,22 @@ const DocumentList = ({ documents = [] }) => {
 
   const columns = [
     {
-      title: <p className="text-[10px]">File Name</p>,
+      title: <p className="text-xs">File Name</p>,
       dataIndex: "key",
       key: "key",
       render: (text) => (
-        <span className="font-semibold text-[13px]">
+        <span className="font-semibold text-sm">
           <FileOutlined className="mr-2" />
           {text.split("/").pop()}
         </span>
       ),
     },
     {
-      title: <p className="text-[10px]">Actions</p>,
+      title: <p className="text-xs">Actions</p>,
       dataIndex: "url",
       key: "url",
       render: (text, record) => (
-        <div>
+        <div className="flex gap-2">
           <Button
             type="link"
             onClick={() => handlePreview(text)}
@@ -117,15 +116,9 @@ const DocumentList = ({ documents = [] }) => {
           return (
             <Panel
               header={
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <span style={{ fontWeight: "500" }}>{mainCategory}</span>
-                  <span style={{ fontSize: "12px", color: "#ff7f02" }}>
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">{mainCategory}</span>
+                  <span className="text-sm text-orange-500">
                     {fileCount} files
                   </span>
                 </div>
@@ -151,14 +144,15 @@ const DocumentList = ({ documents = [] }) => {
         title=""
         footer={null}
         onCancel={() => setPreviewVisible(false)}
-        width="90%"
-        height="90%"
-        style={{ top: 50 }}
+        width={isMobile ? "100%" : "90%"}
+        bodyStyle={{ paddingTop: 34, height: isMobile ? "92vh" : "87vh" }}
+        style={{ top: isMobile ? 0 : 30 }}
+        className={isMobile ? "p-0 h-screen" : ""}
       >
         <iframe
           src={previewUrl}
           width="100%"
-          height="650px"
+          height="100%"
           style={{ border: "none" }}
           title="Document Preview"
         />

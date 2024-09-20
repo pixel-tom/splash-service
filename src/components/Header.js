@@ -104,7 +104,7 @@ const CustomHeader = () => {
               borderRadius: "50px",
               paddingLeft: "40px",
             }}
-            className="py-2 ml-10 w-64 lg:w-[400px] md:ml-0"
+            className="py-2 ml-10 w-52 lg:w-[400px] md:ml-0 invisible md:visible"
           />
         </div>
         {user ? (
