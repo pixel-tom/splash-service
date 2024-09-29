@@ -42,7 +42,8 @@ export default async function handler(req, res) {
           mimeType: file.mimeType,
           size: file.size,
           modifiedTime: file.modifiedTime,
-          url: `https://drive.google.com/uc?export=download&id=${file.id}`, // Corrected download link
+          // Use Google Drive preview URL for inline viewing in an iframe
+          url: `https://drive.google.com/file/d/${file.id}/preview`, // Preview URL for inline viewing
         }));
 
         res.status(200).json({ type: 'files', documents });

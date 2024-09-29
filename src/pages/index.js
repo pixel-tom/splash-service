@@ -61,6 +61,7 @@ const Home = () => {
             <Grid item xs={12} sm={6} md={6} lg={4} key={index}>
               <Paper
                 elevation={3}
+                
                 sx={{
                   display: 'flex',
                   justifyContent: 'center',
@@ -69,6 +70,7 @@ const Home = () => {
                   p: 2,
                   backgroundColor: 'grey.100',
                   borderRadius: 2,
+                  border: '1px solid #d5d5d5',
                 }}
               >
                 <Image src={logo.src} alt={logo.alt} height={logo.height} width={logo.width} />

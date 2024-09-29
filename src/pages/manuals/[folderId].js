@@ -15,35 +15,40 @@ import {
   CircularProgress,
   Alert,
   Paper,
+  IconButton,
+  Box
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import DownloadIcon from '@mui/icons-material/Download'; // MUI icon for download
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import Dashboard from "../../components/Dashboard";
+import { formatFileSize } from '../../utils/formatFileSize'; // Import your custom file size formatter
 
 const Manuals = () => {
   const router = useRouter();
-  const { folderId, name } = router.query; // Get the folder ID and name from the URL
+  const { folderId, name } = router.query;
   const [subfolders, setSubfolders] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [expanded, setExpanded] = useState(null); // To track the currently expanded accordion
+  const [expanded, setExpanded] = useState(null);
 
   useEffect(() => {
     if (!folderId) return;
 
     const fetchDocumentsOrFolders = async () => {
       try {
-        const res = await fetch(`/api/documents/${folderId}`); // Use folder ID from the URL
+        const res = await fetch(`/api/documents/${folderId}`);
         if (!res.ok) {
           throw new Error(`Error: ${res.statusText}`);
         }
         const data = await res.json();
 
         if (data.type === "folders") {
-          setSubfolders(data.subfolders); // Display subfolders
+          setSubfolders(data.subfolders);
         } else if (data.type === "files") {
           setDocuments(
-            data.documents.filter((doc) => doc.name !== ".DS_Store") // Filter out .DS_Store files
+            data.documents.filter((doc) => doc.name !== ".DS_Store")
           );
         }
         setLoading(false);
@@ -58,7 +63,7 @@ const Manuals = () => {
 
   const handleAccordionToggle = async (subfolderId) => {
     if (expanded === subfolderId) {
-      setExpanded(null); // Collapse the accordion if it's already expanded
+      setExpanded(null);
       return;
     }
 
@@ -69,9 +74,9 @@ const Manuals = () => {
       }
       const data = await res.json();
       setDocuments(
-        data.documents.filter((doc) => doc.name !== ".DS_Store") // Filter out .DS_Store files
+        data.documents.filter((doc) => doc.name !== ".DS_Store")
       );
-      setExpanded(subfolderId); // Expand the clicked accordion
+      setExpanded(subfolderId);
     } catch (err) {
       setError(err.message || "Failed to fetch documents for subfolder");
     }
@@ -101,15 +106,15 @@ const Manuals = () => {
                   </AccordionSummary>
                   <AccordionDetails>
                     {documents.length > 0 ? (
-                      <TableContainer component={Paper}>
+                      <TableContainer component={Paper} className="border">
                         <Table sx={{ minWidth: 650 }} aria-label="documents table">
                           <TableHead>
                             <TableRow>
-                              <TableCell sx={{ fontWeight: 'bold' }}>File Name</TableCell>
-                              <TableCell sx={{ fontWeight: 'bold' }} align="right">
+                              <TableCell sx={{  fontSize: "13px" }} >File Name</TableCell>
+                              <TableCell sx={{  fontSize: "13px" }} align="right">
                                 File Size
                               </TableCell>
-                              <TableCell sx={{ fontWeight: 'bold' }} align="right">
+                              <TableCell sx={{  fontSize: "13px" }} align="right">
                                 Actions
                               </TableCell>
                             </TableRow>
@@ -119,23 +124,24 @@ const Manuals = () => {
                               <TableRow
                                 key={doc.key}
                                 sx={{
-                                  bgcolor: index % 2 === 0 ? 'grey.100' : 'white', // Striped effect
+                                  bgcolor: index % 2 === 0 ? "grey.100" : "white",
                                 }}
                               >
-                                <TableCell component="th" scope="row">
+                                <TableCell sx={{ fontWeight: "bold" }} component="th" scope="row">
                                   {doc.name}
                                 </TableCell>
-                                <TableCell align="right">
-                                  {(doc.size / 1024).toFixed(2)} KB
+                                <TableCell align="right" className="text-gray-500">
+                                  {formatFileSize(doc.size)} {/* Use formatFileSize */}
                                 </TableCell>
                                 <TableCell align="right">
-                                  <Link href={doc.url} target="_blank" rel="noopener" color="primary">
-                                    Preview
-                                  </Link>{" "}
-                                  |{" "}
-                                  <Link href={doc.url} download color="primary">
-                                    Download
-                                  </Link>
+                                  <IconButton
+                                    color="primary"
+                                    href={doc.url}
+                                    download
+                                    aria-label={`Download ${doc.name}`}
+                                  >
+                                    <VisibilityOutlinedIcon color="secondary" />
+                                  </IconButton>
                                 </TableCell>
                               </TableRow>
                             ))}

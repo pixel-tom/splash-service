@@ -7,14 +7,11 @@ import {
   List,
   ListItemIcon,
   ListItemText,
-  IconButton,
   Divider,
   Typography,
   ListItemButton,
   Collapse,
 } from '@mui/material';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FolderIcon from '@mui/icons-material/Folder';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 
@@ -41,10 +38,6 @@ const Sidebar = ({ collapsedWidth = 100 }) => {
     };
     fetchFolders();
   }, []);
-
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
-  };
 
   return (
     <Drawer
