@@ -1,105 +1,81 @@
 import React from "react";
-import { Layout, Typography, Button, Row, Col } from "antd";
 import Dashboard from "../components/Dashboard";
 import Image from "next/image";
-
-const { Content } = Layout;
-const { Title } = Typography;
+import { Box, Grid, Typography, Paper } from '@mui/material';
 
 const Home = () => {
+  const logos = [
+    { src: '/avw-logo.png', alt: 'AVW', height: 55, width: 60 },
+    { src: '/laguna_logo-1.png', alt: 'Laguna', height: 80, width: 120 },
+    { src: '/sonnys-logo.webp', alt: 'Sonny\'s', height: 80, width: 120 },
+    { src: '/macneil-logo.png', alt: 'MacNeil', height: 80, width: 120 },
+    { src: '/tommys-logo.png', alt: 'Tommy\'s', height: 80, width: 120 },
+    { src: '/mcww-logo.webp', alt: 'MCWW', height: 80, width: 100 },
+    { src: '/belanger-logo.png', alt: 'Belanger', height: 80, width: 120 },
+    { src: '/gardner-denver-logo.png', alt: 'Gardner Denver', height: 80, width: 120 },
+    { src: '/fs-curtis-logo.png', alt: 'FS Curtis', height: 80, width: 120 },
+    { src: '/drb-logo.svg', alt: 'DRB', height: 80, width: 60 },
+  ];
+
   return (
     <Dashboard>
-      <Content
-        style={{
-          borderRadius: "10px",
-          border: "1px solid #e5e5e5",
-          backgroundImage: 'url("/bright.png")', // Adjust the path to your image
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: "200px", // Ensure the content has some minimum height
-          color: "#fff", // Ensure text is visible on the background
+      {/* Background Image Section */}
+      <Box
+        sx={{
+          backgroundImage: 'url("/bright.png")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          minHeight: '260px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: 2,
+          border: '1px solid #e0e0e0',
+          py: 5,
+          px: 4
         }}
-        className="bg-cover py-20 px-8"
       >
-        <div className="text-center mt-5 mb-2">
-          <p
-            level={1}
-            style={{
-              margin: "0",
-              padding: "0",
-              color: "#fff",
-              fontFamily: "Gotham Black, sans-serif",
-              textTransform: "uppercase", // Make text all caps
-            }}
-            className="text-3xl md:text-5xl"
+        <Box textAlign="center">
+          <Typography
+            variant="h3"
+            color="white"
+            fontWeight="bold"
+            sx={{ textTransform: 'uppercase' }}
           >
-            SPLASH SERVICE
-          </p>
-          <p className="text-sm md:text-md font-medium text-gray-200">
-            Equipment Documentation and Training
-          </p>
-        </div>
-      </Content>
+            Splash Service
+          </Typography>
+          <Typography variant="body1" color="gray.300">
+            Equipment Documentation and Resources
+          </Typography>
+        </Box>
+      </Box>
 
-      <Content style={{ padding: '30px' }}>
-        <Title style={{ marginBottom: "16px", textAlign: "center" }} level={4}>Equipment Manuals & Parts</Title>
-        <Row gutter={[16, 16]}>
-          <Col xs={24} sm={12} lg={8}>
-            <Button className="flex space-x-2" type="default" block size="large" style={{ height: '100px', fontSize: '18px' }}>
-              <Image src={'/avw-logo.png'} alt="" height={55} width={60} />
-            </Button>
-          </Col>
-          <Col xs={24} sm={12} lg={8}>
-          <Button className="flex space-x-2" type="default" block size="large" style={{ height: '100px', fontSize: '18px' }}>
-              <Image src={'/laguna_logo-1.png'} alt="" height={80} width={120} />
-            </Button>
-          </Col>
-          <Col xs={24} sm={12} lg={8}>
-          <Button className="flex space-x-2" type="default" block size="large" style={{ height: '100px', fontSize: '18px' }}>
-              <Image src={'/sonnys-logo.webp'} alt="" height={80} width={120} />
-            </Button>
-          </Col>
-          <Col xs={24} sm={12} lg={8}>
-          <Button className="flex space-x-2" type="default" block size="large" style={{ height: '100px', fontSize: '18px' }}>
-              <Image src={'/macneil-logo.png'} alt="" height={80} width={120} />
-            </Button>
-          </Col>
-          <Col xs={24} sm={12} lg={8}>
-          <Button className="flex space-x-2" type="default" block size="large" style={{ height: '100px', fontSize: '18px' }}>
-              <Image src={'/tommys-logo.png'} alt="" height={80} width={120} />
-            </Button>
-          </Col>
-          <Col xs={24} sm={12} lg={8}>
-          <Button className="flex space-x-2" type="default" block size="large" style={{ height: '100px', fontSize: '18px' }}>
-              <Image src={'/mcww-logo.webp'} alt="" height={80} width={100} />
-            </Button>
-          </Col>
-          <Col xs={24} sm={12} lg={8}>
-          <Button className="flex space-x-2" type="default" block size="large" style={{ height: '100px', fontSize: '18px' }}>
-              <Image src={'/belanger-logo.png'} alt="" height={80} width={120} />
-            </Button>
-          </Col>
-          <Col xs={24} sm={12} lg={8}>
-          <Button className="flex space-x-2" type="default" block size="large" style={{ height: '100px', fontSize: '18px' }}>
-              <Image src={'/gardner-denver-logo.png'} alt="" height={80} width={120} />
-            </Button>
-          </Col>
-          <Col xs={24} sm={12} lg={8}>
-          <Button className="flex space-x-2" type="default" block size="large" style={{ height: '100px', fontSize: '18px' }}>
-              <Image src={'/fs-curtis-logo.png'} alt="" height={80} width={120} />
-            </Button>
-          </Col>
-          <Col xs={24} sm={12} lg={8}>
-          <Button className="flex space-x-2" type="default" block size="large" style={{ height: '100px', fontSize: '18px' }}>
-              <Image src={'/drb-logo.svg'} alt="" height={80} width={60} />
-            </Button>
-          </Col>
-        </Row>
-      </Content>
+      {/* Logo Grid Section */}
+      <Box py={10} mx={4}>
+        <p className="text-center text-gray-400 mb-4">
+          Search by Brand Name
+        </p>
+        <Grid container spacing={3} justifyContent="center">
+          {logos.map((logo, index) => (
+            <Grid item xs={12} sm={6} md={6} lg={4} key={index}>
+              <Paper
+                elevation={3}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: '100px',
+                  p: 2,
+                  backgroundColor: 'grey.100',
+                  borderRadius: 2,
+                }}
+              >
+                <Image src={logo.src} alt={logo.alt} height={logo.height} width={logo.width} />
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
     </Dashboard>
   );
 };
