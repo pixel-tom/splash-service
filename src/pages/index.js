@@ -40,11 +40,12 @@ const Home = () => {
             variant="h3"
             color="white"
             fontWeight="bold"
-            sx={{ textTransform: 'uppercase' }}
+            
+            sx={{ textTransform: 'uppercase', fontFamily: 'Gotham Black, sans-serif', letterSpacing: '1px' }}
           >
             Splash Service
           </Typography>
-          <Typography variant="body1" color="gray.300">
+          <Typography variant="body1" color="#e0e0e0">
             Equipment Documentation and Resources
           </Typography>
         </Box>
