@@ -10,9 +10,10 @@ export default function App({ Component, pageProps }) {
   return (
     <>
       <ThemeProvider theme={theme}>
-        <CssBaseline /> {/* Ensures baseline styles like consistent margin, padding, etc. */}
+        <CssBaseline />
         <Head>
           <title>Splash Service Hub</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
           <link
             rel="preload"
             href="/fonts/Gotham-Bold.otf"

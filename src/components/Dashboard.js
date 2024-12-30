@@ -1,5 +1,3 @@
-// components/Dashboard.js
-
 import React, { useState } from "react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
@@ -14,52 +12,32 @@ const Dashboard = ({ children }) => {
   };
 
   return (
-    <div className="flex">
-      {isMobile ? (
-        <>
-          <button
-            onClick={toggleDrawer}
-            className="fixed top-6 left-4 z-50 bg-gray-200 p-2 rounded-md"
-          >
-            {/* Hamburger Icon */}
-            <svg
-              className="w-6 h-6 text-gray-700"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </button>
-          {/* Sidebar Drawer */}
-          <div
-            className={`fixed inset-y-0 left-0 transform ${
-              drawerVisible ? "translate-x-0" : "-translate-x-full"
-            } transition-transform duration-300 ease-in-out bg-gray-100 w-64 z-40`}
-          >
-            <Sidebar />
-          </div>
-          {/* Overlay */}
-          {drawerVisible && (
-            <div
-              className="fixed inset-0 bg-black opacity-50 z-30"
+    <div className="flex flex-col min-h-screen bg-[#fefeff]">
+      <Header toggleDrawer={toggleDrawer} />
+      
+      <div className="flex flex-1 relative">
+        {/* Desktop Sidebar */}
+        <aside className="hidden md:block w-64 border-r border-[#e5e5e5]">
+          <Sidebar />
+        </aside>
+
+        {/* Mobile Sidebar */}
+        {isMobile && drawerVisible && (
+          <>
+            <div 
+              className="fixed inset-0 bg-black/50 z-30 transition-opacity"
               onClick={toggleDrawer}
-            ></div>
-          )}
-        </>
-      ) : (
-        <Sidebar />
-      )}
-      <div className="flex-1 flex flex-col">
-        <Header />
-        <div className="p-4 flex-1 bg-[#fefeff] border border-l-[#e5e5e5]">
+            />
+            <aside className="fixed inset-y-0 left-0 w-64 z-40 bg-[#fefeff] border-r border-[#e5e5e5]">
+              <Sidebar />
+            </aside>
+          </>
+        )}
+
+        {/* Main Content */}
+        <main className="flex-1 p-6">
           {children}
-        </div>
+        </main>
       </div>
     </div>
   );

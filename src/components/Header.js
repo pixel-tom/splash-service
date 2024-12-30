@@ -1,23 +1,49 @@
-// components/Header.js
-
+/* eslint-disable @next/next/no-img-element */
 import React from "react";
-import { useRouter } from "next/router";
 
-const CustomHeader = () => {
-  const router = useRouter();
-
+const CustomHeader = ({ toggleDrawer }) => {
   return (
-    <header
-      className="px-4 rounded-tl-lg mt-3 bg-[#fefeff] text-[#084b73] border-t border-l border-[#e5e5e5]"
-    >
-      <div className="flex w-full gap-4 justify-between items-center">
-        <div className="relative flex-1">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="hidden md:block py-1.5 my-2 ml-10 w-52 lg:w-[400px] md:ml-0 bg-[#f5f5f5] text-[#084b73] border border-[#0fa7de] rounded-full pl-10"
+    <header className="bg-[#fefeff] border-b border-[#e5e5e5] relative z-50">
+      <div className="px-6 py-2 flex items-center justify-between">
+        {/* Logo */}
+        <div className="flex items-center">
+          <img
+            src="/splash-logo.png"
+            alt="Logo"
+            className="h-12 w-auto"
           />
         </div>
+
+        {/* Search bar - desktop only */}
+        <div className="flex-1 hidden md:flex ml-64">
+          <div className="relative w-full max-w-[500px]">
+            <input
+              type="text"
+              placeholder="Search..."
+              className="w-full py-2 px-4 pl-10 bg-[#f5f5f5] text-[#084b73] border border-[#0fa7de] rounded-full"
+            />
+          </div>
+        </div>
+
+        {/* Mobile menu button */}
+        <button
+          onClick={toggleDrawer}
+          className="p-2 rounded-lg hover:bg-gray-100 md:hidden"
+        >
+          <svg
+            className="w-6 h-6 text-gray-700"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
       </div>
     </header>
   );

@@ -19,7 +19,6 @@ const Sidebar = ({ collapsedWidth = 100 }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [manualFolders, setManualFolders] = useState([]);
   const [open, setOpen] = useState(true); // Toggle open/close state of Equipment Manuals
-  const isMdOrLarger = useMediaQuery({ query: '(min-width: 768px)' });
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -57,7 +56,7 @@ const Sidebar = ({ collapsedWidth = 100 }) => {
       <div className="flex items-center justify-between p-4">
         <Link href="/" passHref>
           <Typography variant="h6" noWrap component="div" className="flex items-center">
-            {isMounted && isMdOrLarger && (
+            {isMounted && (
               <Image src="/splash-logo.png" alt="splash" height={60} width={60} className="ml-2" />
             )}
           </Typography>
